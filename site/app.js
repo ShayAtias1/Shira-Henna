@@ -4714,11 +4714,6 @@ void main() {
   float a = front.a + back.a * (1.0 - front.a);
   vec3 col = (front.rgb * front.a + back.rgb * back.a * (1.0 - front.a)) / max(a, 0.001);
 
-  /* the rod pocket: gathered, darker and denser at the very top */
-  float rod = smoothstep(0.075, 0.0, yy);
-  col = mix(col, vec3(0.86, 0.7, 0.7), rod * 0.55);
-  a += rod * 0.32;
-
   /* the weave */
   a *= 0.94 + 0.09 * vnoise(gl_FragCoord.xy * 0.55);
   a = clamp(a, 0.0, 0.9);

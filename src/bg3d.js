@@ -5,8 +5,8 @@ import * as THREE from 'three';
  * reduced resolution, it is all soft light) over the blush background:
  *   - two panels of pleated voile, the back one fainter, so it reads as cloth
  *     you can see through,
- *   - the cloth is gathered at the top (a darker rod pocket) and free below, so
- *     it sways more toward the hem, and the pleats fan out a little as they fall,
+ *   - the cloth is fixed at the top and free below, so it sways more toward
+ *     the hem, and the pleats fan out a little as they fall,
  *   - the flanks of each fold that face the window catch the light and the
  *     ones that face away fall into a soft rose shadow,
  *   - a breeze moves it; scrolling fast and tilting the phone stir it too.
@@ -75,11 +75,6 @@ void main() {
 
   float a = front.a + back.a * (1.0 - front.a);
   vec3 col = (front.rgb * front.a + back.rgb * back.a * (1.0 - front.a)) / max(a, 0.001);
-
-  /* the rod pocket: gathered, darker and denser at the very top */
-  float rod = smoothstep(0.075, 0.0, yy);
-  col = mix(col, vec3(0.86, 0.7, 0.7), rod * 0.55);
-  a += rod * 0.32;
 
   /* the weave */
   a *= 0.94 + 0.09 * vnoise(gl_FragCoord.xy * 0.55);
