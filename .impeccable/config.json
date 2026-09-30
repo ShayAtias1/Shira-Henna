@@ -1,0 +1,49 @@
+{
+  "hook": {
+    "enabled": true,
+    "limits": {
+      "maxFindings": 5,
+      "maxChars": 8000
+    }
+  },
+  "buildPath": "code",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(.3, 1.6, .5, 1)",
+        "createdAt": "2026-09-30T10:52:33.930Z",
+        "reason": "Claude: literal physical motion, the pulled tassel springs back and overshoots like a hanging weight; only used on release of that control"
+      },
+      {
+        "rule": "wide-tracking",
+        "value": "*",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-30T10:52:41.919Z",
+        "reason": "Claude: 2 to 4 word eyebrow labels (12px, 3px tracking) carried from the approved concept, echoing the airy captions of the invitation; not running body copy"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-30T10:52:41.933Z",
+        "reason": "Claude: the blush ground is the rose silk of the user's own invitation art direction, not a default cream"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "site/index.html"
+        ],
+        "createdAt": "2026-09-30T11:13:46.307Z",
+        "reason": "user confirmed: asked for the word לבן to be white on the site background; decorative and aria-hidden, meaning is carried by the label and sentence, legible via rose outline and soft shadow"
+      }
+    ]
+  }
+}
