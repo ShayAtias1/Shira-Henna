@@ -1,0 +1,8 @@
+# The site is the static folder `site/`. app.js is already built, so no build step.
+[build]
+  publish = "site"
+
+[[headers]]
+  for = "/*.ics"
+  [headers.values]
+    Content-Type = "text/calendar; charset=utf-8"
