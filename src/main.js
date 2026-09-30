@@ -383,10 +383,10 @@ const petals = () => {
   }
 };
 
+const tapLabel = tapsend.textContent;
 const submit = async () => {
   if (state.busy || state.step !== '3') return;
   state.busy = true;
-  tapsend.textContent = 'שולחת…';
   tapsend.disabled = true;
   statusEl.textContent = '';
   const payload = {
@@ -395,12 +395,16 @@ const submit = async () => {
     website: form.elements.website.value,
     sentAt: new Date().toISOString(),
   };
+  // Optimistic: the thank-you appears the moment the tassel is pulled, the network round trip
+  // (slow on a phone) happens behind it. If it fails, the guest is taken back to try again.
+  const sending = post(payload);
+  ids[nameKey(state.name)] = state.id;
+  store.set('shira-rsvp-ids', ids);
+  show('done');
+  if (state.going === 'yes') { petals(); ambient && ambient.burst(innerWidth / 2, innerHeight * 0.55); buzz(18); }
   try {
-    await post(payload);
-    ids[nameKey(state.name)] = state.id;
-    store.set('shira-rsvp-ids', ids);
-    show('done');
-    if (state.going === 'yes') { petals(); ambient && ambient.burst(innerWidth / 2, innerHeight * 0.55); buzz(18); }
+    await sending;
+    tapsend.textContent = tapLabel;
   } catch (err) {
     console.warn('[RSVP] failed', err);
     let link = null;
@@ -411,6 +415,7 @@ const submit = async () => {
       a.href = cfg.WHATSAPP_URL; a.textContent = 'לכתוב לשירה בוואטסאפ';
       link.append(a);
     }
+    show(3);
     say('לא הצלחנו לשלוח כרגע, אפשר לנסות שוב.', link);
     tapsend.textContent = 'ניסיון נוסף';
   } finally {
