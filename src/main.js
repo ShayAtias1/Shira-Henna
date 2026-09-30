@@ -8,6 +8,8 @@ import { createVine } from './vine.js';
 import { createBackdrop } from './bg3d.js';
 
 gsap.registerPlugin(ScrollTrigger);
+// a phone's address bar sliding in and out fires resize; that must not re-layout the page
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const cfg = window.SITE || {};
 const $ = (s, r = document) => r.querySelector(s);
@@ -493,8 +495,14 @@ const onScrollKick = () => {
 };
 addEventListener('scroll', onScrollKick, { passive: true });
 
+let slow = 0, lightened = false;
 gsap.ticker.add((time, dtms) => {
   const dt = Math.min(0.033, dtms / 1000);
+  // if the phone cannot keep up, quietly make the background cheaper
+  if (!lightened && time > 4) {
+    slow = dtms > 26 ? slow + 1 : Math.max(0, slow - 1);
+    if (slow > 40) { lightened = true; backdrop && backdrop.lighten(); ambient && ambient.lighten(); }
+  }
   const k = 1 - Math.exp(-dt * 6);
   env.tx += (target.tx - env.tx) * k;
   env.ty += (target.ty - env.ty) * k;
@@ -540,8 +548,12 @@ gsap.ticker.add((time, dtms) => {
 });
 
 /* layout changes */
-let resizeRaf = 0;
+let resizeRaf = 0, lastW = innerWidth, lastH = innerHeight;
 addEventListener('resize', () => {
+  // on touch screens ignore height-only changes (the address bar), they are what made the page jump
+  const sameWidth = innerWidth === lastW;
+  if (sameWidth && Math.abs(innerHeight - lastH) < 200 && matchMedia('(pointer: coarse)').matches) return;
+  lastW = innerWidth; lastH = innerHeight;
   cancelAnimationFrame(resizeRaf);
   resizeRaf = requestAnimationFrame(() => { measure(); scene && scene.layout(); ambient && ambient.resize(); backdrop && backdrop.resize(); ScrollTrigger.refresh(); });
 });

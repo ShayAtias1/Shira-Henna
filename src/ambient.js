@@ -46,7 +46,7 @@ export function createAmbient({ canvas }) {
 
   const size = () => {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    w = innerWidth; h = innerHeight;
+    w = canvas.clientWidth || innerWidth; h = canvas.clientHeight || innerHeight;
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     parts = [];
@@ -86,7 +86,9 @@ export function createAmbient({ canvas }) {
   };
 
   // phones fire resize while the address bar slides; only rebuild on a real change
-  api.resize = () => { if (innerWidth !== w || Math.abs(innerHeight - h) > 120) size(); };
+  /** slow device: fewer petals and specks */
+  api.lighten = () => { let petals = 0; parts = parts.filter((p) => p.life || (p.kind === 'petal' ? petals++ % 2 === 0 : Math.random() < 0.5)); };
+  api.resize = () => { if ((canvas.clientWidth || innerWidth) !== w || Math.abs((canvas.clientHeight || innerHeight) - h) > 120) size(); };
 
   api.frame = (dt, time) => {
     const dScroll = scrollY - lastScroll;

@@ -114,7 +114,7 @@ a { color: inherit; }
    THE LIVING BACKGROUND: soft light that drifts behind everything, and
    petals + dust (canvas) that float in front of it
 ------------------------------------------------------------------- */
-.ambient { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.ambient { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100lvh; z-index: -1; overflow: hidden; pointer-events: none; }
 .ambient__gl { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
 .has-bg .ambient__gl { display: block; }
 .ambient__wash { position: absolute; inset: 0; background: var(--paper); opacity: 1; }
@@ -137,7 +137,7 @@ a { color: inherit; }
 @keyframes drift2 { from { transform: translate3d(8vw, 6vh, 0) scale(1.1); }   to { transform: translate3d(-16vw, -10vh, 0) scale(.9); } }
 @keyframes drift3 { from { transform: translate3d(-4vw, 10vh, 0) scale(1); }    to { transform: translate3d(18vw, -8vh, 0) scale(1.22); } }
 
-.petals { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 40; pointer-events: none; }
+.petals { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100lvh; z-index: 40; pointer-events: none; }
 
 /* the henna vine along the timeline */
 .vine { position: absolute; z-index: 0; top: 24px; left: 0; width: 35px; pointer-events: none; }

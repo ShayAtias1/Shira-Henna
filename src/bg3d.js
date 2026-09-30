@@ -107,10 +107,11 @@ export function createBackdrop(canvas) {
   mesh.frustumCulled = false;
   scene.add(mesh);
 
+  let quality = 0.75;
   const size = () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    renderer.setPixelRatio(dpr * 0.75);
-    renderer.setSize(innerWidth, innerHeight, false);
+    renderer.setPixelRatio(dpr * quality);
+    renderer.setSize(canvas.clientWidth || innerWidth, canvas.clientHeight || innerHeight, false);
     renderer.getDrawingBufferSize(uniforms.uRes.value);
   };
   size();
@@ -118,6 +119,8 @@ export function createBackdrop(canvas) {
   return {
     uniforms,
     resize() { size(); },
+    /** slow device: draw the curtain at a lower resolution */
+    lighten() { if (quality > 0.4) { quality = 0.4; size(); } },
     render(time) { uniforms.uT.value = time; renderer.render(scene, camera); },
     dispose() { renderer.dispose(); tri.dispose(); mat.dispose(); },
   };
