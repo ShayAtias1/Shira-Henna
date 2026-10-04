@@ -23,35 +23,33 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },
 };
 
-/* Background music begins with the first guest interaction. */
+/* Start music on the first touch or click anywhere on the page. */
 const music = $('[data-music]');
 const musicToggle = $('[data-music-toggle]');
 if (cfg.MUSIC_URL) {
   music.src = cfg.MUSIC_URL;
   music.volume = 0.35;
   musicToggle.hidden = false;
+  const gestures = ['pointerdown', 'touchstart', 'pointerup', 'touchend', 'click', 'keydown'];
   const paintMusic = () => {
     musicToggle.setAttribute('aria-pressed', String(!music.paused));
     musicToggle.setAttribute('aria-label', music.paused ? 'הפעלת מוזיקת רקע' : 'השתקת מוזיקת רקע');
   };
-  const playMusic = () => music.play().catch(paintMusic);
+  const stopWaiting = () => gestures.forEach((type) => document.removeEventListener(type, beginMusic, true));
+  const playMusic = () => music.play().then(stopWaiting).catch(paintMusic);
   const beginMusic = (event) => {
     if (event.type === 'keydown' && !['Enter', ' ', 'Tab'].includes(event.key)) return;
-    if (event.target.closest('[data-music-toggle]')) return;
-    document.removeEventListener('pointerdown', beginMusic);
-    document.removeEventListener('keydown', beginMusic);
-    playMusic();
+    if (event.target.closest?.('[data-music-toggle]')) return;
+    if (music.paused) playMusic();
   };
   musicToggle.addEventListener('click', () => {
-    document.removeEventListener('pointerdown', beginMusic);
-    document.removeEventListener('keydown', beginMusic);
+    stopWaiting();
     if (music.paused) playMusic(); else music.pause();
   });
-  music.addEventListener('play', paintMusic);
+  music.addEventListener('play', () => { stopWaiting(); paintMusic(); });
   music.addEventListener('pause', paintMusic);
-  music.addEventListener('error', () => { musicToggle.hidden = true; });
-  document.addEventListener('pointerdown', beginMusic);
-  document.addEventListener('keydown', beginMusic);
+  music.addEventListener('error', () => { stopWaiting(); musicToggle.hidden = true; });
+  gestures.forEach((type) => document.addEventListener(type, beginMusic, { capture: true, passive: true }));
 }
 
 /* ------------------------------------------------------------------
