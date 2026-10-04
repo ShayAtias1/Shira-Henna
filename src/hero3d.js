@@ -275,7 +275,7 @@ export function createHeroScene({ canvas, frameEl, reduce }) {
   card.add(petals);
 
   /* ---- state, layout, loop ---- */
-  const state = { outer: 0, inner: 0, trees: 0, bloom: 0, hamsaLine: 0, hamsaRise: 0, paper: 0, tassel: 0, petals: 0, scroll: 0 };
+  const state = { outer: 0, inner: 0, trees: 0, bloom: 0, hamsaLine: 0, hamsaRise: 0, paper: 0, tassel: 0, petals: 0, scroll: 0, pull: 0 };
   const view = { w: 1, h: 1, cx: 0, cy: 0, fw: 340, d0: 6, zoom: 1.16 };
   const env = { tx: 0, ty: 0, tilt: 0 };
   const tiltOut = { rx: 0, ry: 0 };
@@ -336,6 +336,7 @@ export function createHeroScene({ canvas, frameEl, reduce }) {
     mats.forEach((m) => { m.linewidth = m.userData.base * w; });
 
     tassel.root.visible = state.tassel > 0.001;
+    tassel.root.position.y = tipY + 5 * K - state.pull * 300 / view.fw * K;
     tassel.root.scale.setScalar(TASSEL_SCALE * Math.max(0.0001, state.tassel));
     tassel.tick(dt, time, env.tilt);
 

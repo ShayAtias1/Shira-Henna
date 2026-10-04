@@ -150,8 +150,8 @@ a { color: inherit; }
 ------------------------------------------------------------------- */
 .hero {
   position: relative;
-  height: 200vh;
-  height: 200svh;
+  height: 300vh;
+  height: 300svh;
 }
 .hero__sticky {
   position: sticky;
@@ -164,7 +164,7 @@ a { color: inherit; }
 .hero__gl { position: absolute; inset: 0; width: 100%; height: 100%; display: none; pointer-events: none; }
 .hero--3d .hero__gl { display: block; }
 .hero--3d .frame { visibility: hidden; }
-.hero--3d .hero__tassel { display: none; }
+.hero--3d .hero__tassel .swing { visibility: hidden; }
 .tilt { position: absolute; inset: 0; transform-origin: 50% calc(var(--top) + var(--fw) * .75); will-change: transform; }
 
 .stage {
@@ -320,7 +320,7 @@ a { color: inherit; }
 /* ------------------------------------------------------------------
    THE THREAD: details hang on a single line
 ------------------------------------------------------------------- */
-.threaded { position: relative; margin-top: calc(-1 * max(0px, 100svh - var(--top) - var(--fw) * 1.62 - 176px)); }
+.threaded { position: relative; }
 .thread {
   position: absolute;
   z-index: 1;
@@ -386,17 +386,28 @@ a { color: inherit; }
    RSVP: a fresh frame the guest grows by answering
 ------------------------------------------------------------------- */
 .rsvp {
-  position: relative;
-  --sw: min(100vw, 430px);
-  overflow: hidden;
+  position: absolute;
+  inset: 0;
+  --sw: 430px;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
 }
-.rsvp__box { width: var(--sw); margin-inline: auto; padding-top: 60px; }
+.rsvp__box {
+  position: absolute;
+  top: calc(var(--top) + var(--fw) * .35);
+  left: 50%;
+  width: var(--sw);
+  margin-left: -215px;
+  transform: scale(calc(var(--fw) / 387px));
+  transform-origin: 50% 0;
+}
+.rsvp__stage { position: relative; width: 100%; }
+/* The invitation's existing paper and ornament remain behind the form. */
+.rsvp__frame { display: none; }
+.rsvp .rsvp__col { top: 0; }
 
-.rsvp__stage {
-  position: relative;
-  width: 100%;
-  height: calc(var(--sw) * 1.35 + 170px);
-}
+
 .rsvp__frame {
   position: absolute;
   top: 0;
@@ -577,3 +588,26 @@ a { color: inherit; }
   .petals { display: none; }
   .reveal, .bead, .g-extra, .g-hamsa { transition: none !important; }
 }
+
+/* One tassel stays attached to the invitation through every text transition. */
+.pull.hero__tassel {
+  top: calc(var(--top) + var(--fw) * 1.5 - var(--u) * 6);
+  width: calc(var(--u) * 52);
+  margin-left: calc(var(--u) * -26);
+}
+.hero__tassel .pull__tassel { width: 100%; min-height: calc(var(--u) * 126); }
+.music-toggle {
+  position: fixed;
+  left: max(16px, env(safe-area-inset-left));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 60;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--rose);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--wine);
+  font-size: 24px;
+  cursor: pointer;
+}
+.music-toggle[aria-pressed="false"] { opacity: .65; }

@@ -25,6 +25,7 @@ const types = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.ics': 'text/calendar; charset=utf-8',
+  '.mp3': 'audio/mpeg',
   '.txt': 'text/plain; charset=utf-8',
 };
 

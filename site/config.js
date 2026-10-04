@@ -3,6 +3,9 @@ window.SITE = {
   // The day of the event (Israel time). Drives the countdown.
   EVENT_DATE: '2026-10-28',
 
+  // Background music file, relative to site/ (for example 'music.mp3').
+  MUSIC_URL: 'music.mp3',
+
   // Where RSVPs are sent. Paste the Google Apps Script web-app URL here
   // (setup steps are in README.md). While this is empty the form only works
   // when you open the site locally, so nobody's answer is silently lost.

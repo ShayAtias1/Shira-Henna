@@ -2,7 +2,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import { createHeroScene } from './hero3d.js';
-import { createTasselView } from './tassel3d.js';
 import { createAmbient } from './ambient.js';
 import { createVine } from './vine.js';
 import { createBackdrop } from './bg3d.js';
@@ -23,6 +22,37 @@ const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },
 };
+
+/* Background music begins with the first guest interaction. */
+const music = $('[data-music]');
+const musicToggle = $('[data-music-toggle]');
+if (cfg.MUSIC_URL) {
+  music.src = cfg.MUSIC_URL;
+  music.volume = 0.35;
+  musicToggle.hidden = false;
+  const paintMusic = () => {
+    musicToggle.setAttribute('aria-pressed', String(!music.paused));
+    musicToggle.setAttribute('aria-label', music.paused ? 'הפעלת מוזיקת רקע' : 'השתקת מוזיקת רקע');
+  };
+  const playMusic = () => music.play().catch(paintMusic);
+  const beginMusic = (event) => {
+    if (event.type === 'keydown' && !['Enter', ' ', 'Tab'].includes(event.key)) return;
+    if (event.target.closest('[data-music-toggle]')) return;
+    document.removeEventListener('pointerdown', beginMusic);
+    document.removeEventListener('keydown', beginMusic);
+    playMusic();
+  };
+  musicToggle.addEventListener('click', () => {
+    document.removeEventListener('pointerdown', beginMusic);
+    document.removeEventListener('keydown', beginMusic);
+    if (music.paused) playMusic(); else music.pause();
+  });
+  music.addEventListener('play', paintMusic);
+  music.addEventListener('pause', paintMusic);
+  music.addEventListener('error', () => { musicToggle.hidden = true; });
+  document.addEventListener('pointerdown', beginMusic);
+  document.addEventListener('keydown', beginMusic);
+}
 
 /* ------------------------------------------------------------------
    Input that moves things: pointer on desktop, tilt on phones
@@ -56,7 +86,15 @@ if (!reduce) {
 }
 $$('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
   const el = $(a.getAttribute('href'));
-  if (!el || !lenis) return;
+  if (!el) return;
+  if (el.id === 'rsvp') {
+    e.preventDefault();
+    const top = $('#hero').offsetTop + innerHeight * 1.65;
+    if (lenis) lenis.scrollTo(top, { duration: 1.5, easing: (t) => 1 - Math.pow(1 - t, 4) });
+    else window.scrollTo({ top, behavior: 'auto' });
+    return;
+  }
+  if (!lenis) return;
   e.preventDefault();
   lenis.scrollTo(el, { duration: 1.5, easing: (t) => 1 - Math.pow(1 - t, 4) });
 }));
@@ -160,26 +198,34 @@ const measure = () => { frameCy = els.frame.offsetTop + els.frame.offsetHeight /
 measure();
 
 const applyHero = (p, tiltRx, tiltRy, zoomMax) => {
-  const e = smooth(0, 0.4, p);
+  const cardP = Math.min(1, p * 2);
+  const e = smooth(0, 0.4, cardP);
   const z = 1 + (zoomMax - 1) * e;
   els.tilt.style.transform = `perspective(900px) rotateX(${(-tiltRx).toFixed(2)}deg) rotateY(${tiltRy.toFixed(2)}deg) scale(${z.toFixed(4)})`;
 
-  const gone = smooth(0.03, 0.22, p);
+  const gone = smooth(0.03, 0.22, cardP);
   els.invite.style.opacity = (1 - gone).toFixed(3);
   els.invite.style.transform = `translate3d(0, ${(-24 * gone).toFixed(1)}px, 0)`;
 
-  const cin = smooth(0.22, 0.5, p);
-  els.count.style.opacity = cin.toFixed(3);
-  els.count.style.transform = `translate3d(0, calc(-50% + ${((1 - cin) * 18).toFixed(1)}px), 0)`;
+  const cin = smooth(0.22, 0.5, cardP);
+  const cout = smooth(0.55, 0.65, p);
+  els.count.style.opacity = (cin * (1 - cout)).toFixed(3);
+  els.count.style.transform = `translate3d(0, calc(-50% + ${((1 - cin) * 18 - cout * 24).toFixed(1)}px), 0)`;
 
-  els.cue.style.opacity = (1 - smooth(0.02, 0.1, p)).toFixed(3);
-  els.blessing.style.opacity = (1 - smooth(0.05, 0.2, p)).toFixed(3);
+  const rin = smooth(0.60, 0.72, p);
+  rsvpSection.style.opacity = rin.toFixed(3);
+  rsvpSection.style.transform = `translate3d(0, ${((1 - rin) * 18).toFixed(1)}px, 0)`;
+  rsvpSection.style.pointerEvents = rin > 0.95 ? 'auto' : 'none';
+  rsvpSection.inert = rin < 0.95;
+  pull.inert = rin < 0.95 || state.step !== '3';
+
+  els.cue.style.opacity = (1 - smooth(0.02, 0.1, cardP)).toFixed(3);
+  els.blessing.style.opacity = (1 - smooth(0.05, 0.2, cardP)).toFixed(3);
 
   if (!scene) {
     els.frame.style.transform = `scale(${z.toFixed(4)})`;
-    const t = smooth(0, 0.3, p);
-    els.htassel.style.opacity = (1 - t).toFixed(3);
-    els.htassel.style.transform = `translate3d(0, ${(t * 60).toFixed(1)}px, 0)`;
+    els.htassel.style.transform = `scale(${z.toFixed(4)})`;
+    els.htassel.style.transformOrigin = `50% ${(-els.frame.offsetHeight).toFixed(1)}px`;
   }
 };
 
@@ -232,7 +278,6 @@ try {
 } catch (err) { console.warn('[backdrop] off', err); }
 let windV = 0, lastSY = scrollY, groundMix = -1;
 const rsvpSection = $('#rsvp');
-
 /* ------------------------------------------------------------------
    RSVP: one question at a time, the botanicals are the progress bar
 ------------------------------------------------------------------ */
@@ -249,13 +294,7 @@ const cord = $('.pull__cord');
 const gmFade = $('[data-gm-fade]');
 const gmSolid = $('[data-gm-solid]');
 
-let tasselView = null;
-try {
-  const c = $('.pull__gl');
-  tasselView = createTasselView(c);
-  c.hidden = false;
-  pull.classList.add('pull--gl');
-} catch (err) { console.warn('[rsvp] flat tassel', err); }
+const tasselView = null;
 
 /* One device can answer for several people, so nothing is pre-filled or locked.
    Each full name keeps its own id, and answering again for the same name updates
@@ -298,6 +337,7 @@ const paint = () => {
 const armPull = (on) => {
   pull.classList.toggle('is-armed', on);
   tassel.tabIndex = on ? 0 : -1;
+  pull.inert = !on || heroP < 0.72;
   if (on) tapsend.textContent = 'או לחצי לשליחה';
 };
 
@@ -432,7 +472,11 @@ const kickTassels = (v) => { scene && scene.kick(v); tasselView && tasselView.ki
   let startY = 0, dy = 0, dragging = false, moved = false;
   const apply = (v) => {
     dy = v;
-    tassel.style.transform = `translate3d(0, ${v.toFixed(1)}px, 0)`;
+    if (scene) {
+      gsap.to(scene.state, { pull: v, duration: v ? 0 : 0.6, ease: 'elastic.out(1, 0.5)', overwrite: 'auto' });
+    } else {
+      tassel.style.transform = `translate3d(0, ${v.toFixed(1)}px, 0)`;
+    }
     cord.style.transform = `scaleY(${(v / 120).toFixed(3)})`;
   };
   tassel.addEventListener('pointerdown', (e) => {
@@ -447,7 +491,7 @@ const kickTassels = (v) => { scene && scene.kick(v); tasselView && tasselView.ki
     const raw = Math.max(0, e.clientY - startY);
     if (raw > 6) moved = true;
     apply(Math.min(MAX, raw * 0.85));
-    tasselView && tasselView.kick(raw * 0.002);
+    kickTassels(raw * 0.002);
   });
   const end = () => {
     if (!dragging) return;
@@ -456,7 +500,7 @@ const kickTassels = (v) => { scene && scene.kick(v); tasselView && tasselView.ki
     pull.classList.add('is-spring');
     const send = dy >= THRESH;
     apply(0);
-    tasselView && tasselView.kick(send ? 6 : 3);
+    kickTassels(send ? 6 : 3);
     if (send) { buzz(12); submit(); }
   };
   tassel.addEventListener('pointerup', end);
@@ -515,11 +559,11 @@ gsap.ticker.add((time, dtms) => {
 
   heroP = reduce ? heroTarget : heroP + (heroTarget - heroP) * (1 - Math.exp(-dt * 9));
 
-  const wash = smooth(0.3, 0.62, heroP);
+  const wash = smooth(0.3, 0.62, Math.min(1, heroP * 2));
   if (Math.abs(wash - washShown) > 0.002) { washShown = wash; ambientEl.style.setProperty('--wash', wash.toFixed(3)); }
   {
     // the room turns from paper to the deeper blush as the answer form arrives
-    const gm = smooth(innerHeight, innerHeight * 0.2, rsvpSection.getBoundingClientRect().top);
+    const gm = smooth(0.60, 0.72, heroP);
     if (Math.abs(gm - groundMix) > 0.002) { groundMix = gm; ambientEl.style.setProperty('--gm', gm.toFixed(3)); }
   }
   if (backdrop) {
@@ -540,7 +584,8 @@ gsap.ticker.add((time, dtms) => {
   if (heroVisible) {
     if (scene) {
       scene.env.tx = env.tx; scene.env.ty = env.ty; scene.env.tilt = env.tilt;
-      scene.state.scroll = heroP;
+      scene.state.scroll = Math.min(1, heroP * 2);
+
       scene.frame(dt, time);
       applyHero(heroP, scene.tiltOut.rx, scene.tiltOut.ry, scene.view.zoom);
     } else {

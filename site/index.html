@@ -84,66 +84,6 @@
           <p class="count__num" data-count-num>28</p>
           <p class="count__unit" data-count-unit>ימים עד החינה</p>
         </div>
-      </div>
-
-      <div class="hero__tassel" aria-hidden="true">
-        <div class="swing" data-swing>
-          <svg class="a-tassel" viewBox="0 0 70 170" width="52" height="126"><use href="#tassel"></use></svg>
-        </div>
-      </div>
-
-      <a class="cue" href="#details"><span class="a-cue cue__in">
-        <span>גללי להמשך</span>
-        <svg viewBox="0 0 16 10" width="16" height="10" aria-hidden="true"><path d="M1 1 L8 8 L15 1" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-      </span></a>
-    </div>
-  </div>
-</section>
-
-<div class="threaded">
-  <div class="thread" aria-hidden="true"><div class="thread__line" data-thread></div></div>
-
-  <section class="details" id="details">
-  <div class="col">
-    <div class="item reveal">
-      <span class="bead bead--full" aria-hidden="true"></span>
-      <p class="eyebrow">הערב שלנו</p>
-      <h2 class="h2">ערב נשי של חלה, ברכות וחינה</h2>
-      <p class="body">מתרגשת להזמין אתכן להיות איתי ברגע הזה. נפריש חלה, נברך, ונחגוג יחד את החינה.</p>
-    </div>
-    <div class="item reveal">
-      <span class="bead" aria-hidden="true"></span>
-      <p class="label">מתי</p>
-      <p class="value">יום רביעי, 28.10.2026</p>
-      <p class="sub">בשעה 19:30</p>
-      <a class="btn btn--line" href="shira-henna.ics" download>
-        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"></rect><path d="M3 8.5 H17 M7 2.5 V6 M13 2.5 V6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
-        <span>הוספה ליומן</span>
-      </a>
-    </div>
-    <div class="item reveal">
-      <span class="bead" aria-hidden="true"></span>
-      <p class="label">איפה</p>
-      <p class="value">בית כנסת בית חב״ד</p>
-      <p class="sub">מבצע נועה 4, ראשון לציון</p>
-      <a class="btn btn--line" data-waze href="https://waze.com/ul?q=%D7%9E%D7%91%D7%A6%D7%A2%20%D7%A0%D7%95%D7%A2%D7%94%204%20%D7%A8%D7%90%D7%A9%D7%95%D7%9F%20%D7%9C%D7%A6%D7%99%D7%95%D7%9F&navigate=yes" target="_blank" rel="noopener">
-        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M10 18 C10 18 4 11.5 4 7.5 A6 6 0 0 1 16 7.5 C16 11.5 10 18 10 18 Z" fill="none" stroke="currentColor" stroke-width="1.3"></path><circle cx="10" cy="7.5" r="2" fill="none" stroke="currentColor" stroke-width="1.3"></circle></svg>
-        <span>ניווט למקום</span>
-      </a>
-    </div>
-    </div>
-  </section>
-
-  <section class="dress" id="dress">
-  <div class="col">
-    <div class="item reveal">
-      <span class="bead" aria-hidden="true"></span>
-      <p class="label">קוד לבוש</p>
-      <p class="value">בואו <span class="dress__white">בלבן</span></p>
-    </div>
-  </div>
-  </section>
-</div>
 
 <section class="rsvp" id="rsvp" aria-label="אישור הגעה">
   <div class="rsvp__box">
@@ -235,25 +175,83 @@
         <p class="rsvp__status" role="status" aria-live="polite" data-status></p>
       </form>
 
-      <div class="pull" data-pull>
-        <span class="pull__cord" aria-hidden="true"></span>
-        <button class="pull__tassel" type="button" data-tassel aria-label="שליחת האישור" tabindex="-1">
-          <canvas class="pull__gl" width="84" height="180" aria-hidden="true" hidden></canvas>
-          <span class="swing" data-swing><svg viewBox="0 0 70 170" width="56" height="136" aria-hidden="true"><use href="#tassel"></use></svg></span>
-        </button>
-      </div>
+
     </div>
   </div>
+</section>
+      </div>
+
+      <div class="pull hero__tassel" data-pull>
+        <span class="pull__cord" aria-hidden="true"></span>
+        <button class="pull__tassel" type="button" data-tassel aria-label="שליחת האישור" tabindex="-1">
+          <span class="swing" data-swing><svg class="a-tassel" viewBox="0 0 70 170" width="52" height="126" aria-hidden="true"><use href="#tassel"></use></svg></span>
+        </button>
+      </div>
+
+      <a class="cue" href="#rsvp"><span class="a-cue cue__in">
+        <span>גללי להמשך</span>
+        <svg viewBox="0 0 16 10" width="16" height="10" aria-hidden="true"><path d="M1 1 L8 8 L15 1" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </span></a>
+    </div>
+  </div>
+</section>
+
+
+<div class="threaded">
+  <div class="thread" aria-hidden="true"><div class="thread__line" data-thread></div></div>
+
+  <section class="details" id="details">
+  <div class="col">
+    <div class="item reveal">
+      <span class="bead bead--full" aria-hidden="true"></span>
+      <p class="eyebrow">הערב שלנו</p>
+      <h2 class="h2">מתרגשת להזמין אתכן לחגוג איתי את ערב הפרשת חלה שלי</h2>
+    </div>
+    <div class="item reveal">
+      <span class="bead" aria-hidden="true"></span>
+      <p class="label">מתי</p>
+      <p class="value">יום רביעי, 28.10.2026</p>
+      <p class="sub">בשעה 19:30</p>
+      <a class="btn btn--line" href="shira-henna.ics" download>
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"></rect><path d="M3 8.5 H17 M7 2.5 V6 M13 2.5 V6" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"></path></svg>
+        <span>הוספה ליומן</span>
+      </a>
+    </div>
+    <div class="item reveal">
+      <span class="bead" aria-hidden="true"></span>
+      <p class="label">איפה</p>
+      <p class="value">בית כנסת בית חב״ד</p>
+      <p class="sub">מבצע נועה 4, ראשון לציון</p>
+      <a class="btn btn--line" data-waze href="https://waze.com/ul?q=%D7%9E%D7%91%D7%A6%D7%A2%20%D7%A0%D7%95%D7%A2%D7%94%204%20%D7%A8%D7%90%D7%A9%D7%95%D7%9F%20%D7%9C%D7%A6%D7%99%D7%95%D7%9F&navigate=yes" target="_blank" rel="noopener">
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M10 18 C10 18 4 11.5 4 7.5 A6 6 0 0 1 16 7.5 C16 11.5 10 18 10 18 Z" fill="none" stroke="currentColor" stroke-width="1.3"></path><circle cx="10" cy="7.5" r="2" fill="none" stroke="currentColor" stroke-width="1.3"></circle></svg>
+        <span>ניווט למקום</span>
+      </a>
+    </div>
+    </div>
+  </section>
+
+  <section class="dress" id="dress">
+  <div class="col">
+    <div class="item reveal">
+      <span class="bead" aria-hidden="true"></span>
+      <p class="label">קוד לבוש</p>
+      <p class="value"><span class="dress__white">לבן</span></p>
+    </div>
+  </div>
+  </section>
+</div>
 
   <footer class="signoff">
     <p class="signoff__t">אשמח לראותכן</p>
     <p class="signoff__name" lang="en" dir="ltr">Shira</p>
   </footer>
-</section>
+
 
 </main>
 
 <noscript><p class="noscript">כדי לאשר הגעה יש להפעיל JavaScript בדפדפן.</p></noscript>
+<audio data-music loop preload="none"></audio>
+<button class="music-toggle" type="button" data-music-toggle aria-label="הפעלת מוזיקת רקע" aria-pressed="false" hidden>♪</button>
 <script src="config.js"></script>
 <script src="app.js" defer></script>
 </body>
