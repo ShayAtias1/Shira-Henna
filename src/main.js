@@ -23,7 +23,7 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } },
 };
 
-/* Start music on the first touch or click anywhere on the page. */
+/* Start music on page load, with a first-touch fallback. */
 const music = $('[data-music]');
 const musicToggle = $('[data-music-toggle]');
 if (cfg.MUSIC_URL) {
@@ -50,6 +50,7 @@ if (cfg.MUSIC_URL) {
   music.addEventListener('pause', paintMusic);
   music.addEventListener('error', () => { stopWaiting(); musicToggle.hidden = true; });
   gestures.forEach((type) => document.addEventListener(type, beginMusic, { capture: true, passive: true }));
+  playMusic();
 }
 
 /* ------------------------------------------------------------------
